@@ -17,14 +17,14 @@ const Index = () => {
   useEffect(() => {
     // Lancer les confetti au chargement de la page
     const launchConfetti = () => {
-      const duration = 3000;
+      const duration = 100;
       const end = Date.now() + duration;
 
       const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'];
 
       (function frame() {
         confetti({
-          particleCount: 100,
+          particleCount: 20,
           angle: 60,
           spread: 120,
           origin: { x: 0 },

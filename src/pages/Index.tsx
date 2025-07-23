@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { FileText, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -13,46 +13,13 @@ declare global {
 const Index = () => {
   const [videoEnded, setVideoEnded] = useState(false);
   const { toast } = useToast();
+  const confettiLaunched = useRef(false);
 
   useEffect(() => {
-    // Lancer les confetti au chargement de la page
-    const launchConfetti = () => {
-      const duration = 100;
-      const end = Date.now() + duration;
-
-      const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'];
-
-      (function frame() {
-        confetti({
-          particleCount: 20,
-          angle: 60,
-          spread: 120,
-          origin: { x: 0 },
-          colors: colors,
-          zIndex: 0
-        });
-        confetti({
-          particleCount: 100,
-          angle: 120,
-          spread: 120,
-          origin: { x: 1 },
-          colors: colors,
-          zIndex: 0
-        });
-
-        if (Date.now() < end) {
-          requestAnimationFrame(frame);
-        }
-      }());
-    };
-
-    launchConfetti();
-
-    // Charger la bibliothèque playerjs
+    // Charger playerjs au chargement du composant
     const script = document.createElement('script');
     script.src = '//assets.mediadelivery.net/playerjs/player-0.1.0.min.js';
     script.onload = () => {
-      // Initialiser le player une fois le script chargé
       if (window.playerjs) {
         const player = new window.playerjs.Player(document.getElementById("video"));
         player.on("ended", () => {
@@ -67,6 +34,27 @@ const Index = () => {
     };
   }, []);
 
+  // Nouvelle fonction pour explosion confetti au centre
+  const launchConfetti = () => {
+    if (confettiLaunched.current) return;
+    confettiLaunched.current = true;
+
+    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'];
+
+    confetti({
+      particleCount: 120,
+      spread: 80,
+      origin: { x: 0.5, y: 0.5 },
+      colors,
+      zIndex: 0,
+      scalar: 1.5, // Particules plus grosses
+      angle: 90,
+      startVelocity: 55,
+      ticks: 90,
+    });
+  };
+
+  // Bouton de formulaire
   const handleButtonClick = () => {
     if (!videoEnded) {
       toast({
@@ -77,13 +65,12 @@ const Index = () => {
       return;
     }
 
-    // Récupérer tous les paramètres d'URL actuels
     const currentParams = new URLSearchParams(window.location.search);
     const baseUrl = 'https://theinfra.fillout.com/onboarding';
     const finalUrl = currentParams.toString() 
       ? `${baseUrl}?${currentParams.toString()}`
       : baseUrl;
-    
+
     window.open(finalUrl, '_blank');
   };
 
@@ -97,8 +84,17 @@ const Index = () => {
           </h1>
         </div>
 
-        {/* Container vidéo */}
-        <div className="relative w-full aspect-video bg-muted rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 animate-scale-in z-10">
+        {/* Container vidéo, déclenche confetti au clic */}
+        <div
+          className="relative w-full aspect-video bg-muted rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 animate-scale-in z-10 group"
+          style={{ zIndex: 0 }}
+        >
+          {/* Overlay invisible pour catch le clic */}
+          <div
+            className="absolute inset-0 cursor-pointer"
+            style={{ zIndex: 2 }}
+            onClick={launchConfetti}
+          />
           <iframe 
             id="video"
             src="https://iframe.mediadelivery.net/embed/471568/7e8cd19f-a2b3-4257-8701-45600cec4777?autoplay=false&loop=false&muted=false&preload=true&responsive=false" 
@@ -106,6 +102,7 @@ const Index = () => {
             allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" 
             allowFullScreen
             loading="lazy"
+            style={{ zIndex: 1 }}
           />
         </div>
 

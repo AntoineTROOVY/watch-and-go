@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FileText, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import confetti from 'canvas-confetti';
 
 declare global {
   interface Window {
@@ -14,6 +15,39 @@ const Index = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Lancer les confetti au chargement de la page
+    const launchConfetti = () => {
+      const duration = 3000;
+      const end = Date.now() + duration;
+
+      const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'];
+
+      (function frame() {
+        confetti({
+          particleCount: 100,
+          angle: 60,
+          spread: 120,
+          origin: { x: 0 },
+          colors: colors,
+          zIndex: 0
+        });
+        confetti({
+          particleCount: 100,
+          angle: 120,
+          spread: 120,
+          origin: { x: 1 },
+          colors: colors,
+          zIndex: 0
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      }());
+    };
+
+    launchConfetti();
+
     // Charger la bibliothèque playerjs
     const script = document.createElement('script');
     script.src = '//assets.mediadelivery.net/playerjs/player-0.1.0.min.js';
@@ -58,13 +92,13 @@ const Index = () => {
       <div className="w-full max-w-4xl space-y-8">
         {/* Titre */}
         <div className="text-center animate-fade-in">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2 tracking-tight">
             Regarde cette vidéo de 2 minutes pour accéder à ton onboarding
           </h1>
         </div>
 
         {/* Container vidéo */}
-        <div className="relative w-full aspect-video bg-muted rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 animate-scale-in">
+        <div className="relative w-full aspect-video bg-muted rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 animate-scale-in z-10">
           <iframe 
             id="video"
             src="https://iframe.mediadelivery.net/embed/471568/7e8cd19f-a2b3-4257-8701-45600cec4777?autoplay=false&loop=false&muted=false&preload=true&responsive=false" 

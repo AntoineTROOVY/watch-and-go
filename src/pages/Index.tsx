@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { FileText, Play } from 'lucide-react';
+import { FileText, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { DarkModeToggle } from '@/components/DarkModeToggle';
 
 declare global {
   interface Window {
@@ -55,19 +54,13 @@ const Index = () => {
   };
 
   return (
-    <>
-      <DarkModeToggle />
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background p-8 transition-colors duration-300">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-8 transition-colors duration-300 font-satoshi">
       <div className="w-full max-w-4xl space-y-8">
         {/* Titre */}
         <div className="text-center animate-fade-in">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
             Regarde cette vidéo de 2 minutes pour accéder à ton onboarding
           </h1>
-          <div className="flex items-center justify-center gap-2 text-muted-foreground">
-            <Play className="w-4 h-4" />
-            <span>Durée : 2 minutes</span>
-          </div>
         </div>
 
         {/* Container vidéo */}
@@ -99,19 +92,13 @@ const Index = () => {
             Remplir le formulaire
           </Button>
           
-          <p className="text-sm text-muted-foreground">
-            Durée estimée : 20-30 minutes
-          </p>
-          
-          {!videoEnded && (
-            <p className="text-xs text-muted-foreground animate-pulse">
-              👆 Regardez la vidéo complète pour débloquer le bouton
-            </p>
-          )}
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <Clock className="w-4 h-4" />
+            <span>Durée remplissage estimée : 20-30 minutes</span>
+          </div>
         </div>
       </div>
     </div>
-    </>
   );
 };
 

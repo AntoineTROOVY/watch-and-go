@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FileText, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import confetti from 'canvas-confetti';
 
 declare global {
   interface Window {
@@ -15,13 +14,6 @@ const Index = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Effet de confetti à l'arrivée sur la page
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
-
     // Charger la bibliothèque playerjs
     const script = document.createElement('script');
     script.src = '//assets.mediadelivery.net/playerjs/player-0.1.0.min.js';
